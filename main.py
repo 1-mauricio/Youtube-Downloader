@@ -1,37 +1,72 @@
 from pytube import YouTube
+import time
+
 
 fim = False
-while not fim:
+
+try:
     link = input("Digite o link do vídeo que deseja baixar: ")
     path = input("Digite o diretório que deseja salvar o vídeo: ")
     yt = YouTube(link)
 
-    print(f"Título: {yt.title}")
-    print(f"Número de views: {yt.views}")
-    tempo = yt.length / 60
-    if tempo > 60:
-        tempo /= 60
-        print(f"Duração aproximada do vídeo: {tempo:.2f} horas")
-    else:
-        print(f"Tamanho do vídeo: {tempo:.2f} minutos")
-
-    aud = input("Baixar apenas áudio?(S/N) ")
-    if aud == "S":
-        video = yt.get_audio_only("mp4")
-    else:
-        res = int(input("1 - A maior possível\n2 - 720p\n3 - 480p\nEscolha a resolução do vídeo: "))
-        if res == 1:
-            video = yt.streams.get_highest_resolution()
-        elif res == 2:
-            video = yt.streams.get_by_resolution("720p")
+    while not fim:
+        print(f"\nTítulo: {yt.title}")
+        print(f"Número de views: {yt.views}")
+        tempo = yt.length / 60
+        if tempo > 60:
+            tempo /= 60
+            print(f"Duração aproximada do vídeo: {tempo:.2f} horas")
         else:
-            video = yt.streams.get_by_resolution("480p")
+            print(f"Tamanho aproximada do vídeo: {tempo:.2f} minutos")
 
-    print("Baixando...")
-    video.download(path)
-    print("Download Completo")
-    loop = input("Baixar novamente?(S/N) ")
-    loop = loop.upper()
-    if loop == "N":
-        fim = True
-        print("Programa encerrado")
+        end = False
+        while not end:
+            print("\n--------------------------------")
+            print("--------------MENU--------------")
+            print("1 - A maior resolução possível")
+            print("2 - 720p")
+            print("3 - 480p")
+            print("4 - Apenas áudio")
+            print("--------------------------------")
+            res = int(input(": "))
+            if res == 1:
+                video = yt.streams.get_highest_resolution()
+                end = True
+            elif res == 2:
+                video = yt.streams.get_by_resolution("720p")
+                end = True
+            elif res == 3:
+                video = yt.streams.get_by_resolution("480p")
+                end = True
+            elif res == 4:
+                video = yt.get_audio_only("mp4")
+                end = True
+            else:
+                print("Digite uma opção válida")
+
+
+        print("Baixando...")
+        video.download(path)
+        print("Download Completo")
+        loop = input("Baixar novamente?(S/N) ")
+        loop = loop.upper()
+
+        while loop != "S" and loop != "N":
+            loop = input("Resposta incorreta. Baixar novamente?(S/N) ")
+            loop = loop.upper()
+        if loop == "N":
+            fim = True
+            print("Programa encerrado")
+            time.sleep(1)
+        else:
+            diret = input("Utilizar o mesmo diretório? (S/N) ")
+            if diret == "S":
+                link = input("Digite o link do vídeo que deseja baixar: ")
+                yt = YouTube(link)
+            else:
+                link = input("Digite o link do vídeo que deseja baixar: ")
+                path = input("Digite o diretório que deseja salvar o vídeo: ")
+                yt = YouTube(link)
+
+except FileNotFoundError:
+    print("O programa não conseguiu encontrar o caminho. Tente novamente")
