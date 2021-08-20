@@ -13,9 +13,12 @@ try:
         print(f"\nTítulo: {yt.title}")
         print(f"Número de views: {yt.views}")
         tempo = yt.length / 60
+        hora = 0
         if tempo > 60:
-            tempo /= 60
-            print(f"Duração aproximada do vídeo: {tempo:.2f} horas")
+            while tempo > 60:
+                hora += 1
+                tempo -=60
+            print(f"Duração aproximada do vídeo: {hora:.0f} horas e {tempo:.0f} minutos")
         else:
             print(f"Tamanho aproximada do vídeo: {tempo:.2f} minutos")
 
